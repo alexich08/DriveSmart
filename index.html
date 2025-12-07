@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DriveSmart</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Roboto', sans-serif;}
+body {background: linear-gradient(135deg, #00bfff, #ff6a00); color:#fff; overflow-x:hidden; scroll-behavior: smooth;}
+a {text-decoration:none; color:inherit;}
+header {display:flex; justify-content:space-between; align-items:center; padding:20px 40px; position:sticky; top:0; z-index:1000; background:#111;}
+.logo {font-size:2.5rem; font-weight:bold; color:#00bfff; transition:0.3s; text-transform: uppercase; letter-spacing:2px; display:flex; align-items:center; gap:10px;}
+.logo:hover {transform:scale(1.1) rotate(-5deg);}
+nav {display:flex; gap:15px;}
+nav a {padding:8px 15px; border-radius:5px; transition:0.3s;}
+nav a:hover {background:#00a1e0; transform:scale(1.05);}
+
+/* Hero */
+.hero {background:#00bfff; color:#fff; text-align:center; padding:100px 20px; position:relative; overflow:hidden;}
+.hero img {position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.3; z-index:0;}
+.hero h1, .btn {opacity:0; transform:translateY(20px);}
+.hero h1 {font-size:3rem; margin-bottom:20px; animation:fadeInUp 1s forwards;}
+.btn {background:#fff; color:#00bfff; padding:15px 30px; font-weight:bold; border-radius:50px; transition:0.3s; display:inline-block; position:relative; z-index:1; animation:fadeInUp 1s 0.3s forwards;}
+.btn:hover {background:#0095cc; color:#fff; transform:scale(1.05);}
+
+/* Анимации */
+@keyframes fadeInUp {to {opacity:1; transform:translateY(0);}}
+
+/* Секции */
+section {padding:60px 20px; max-width:1200px; margin:0 auto;}
+section h2 {text-align:center; font-size:2.5rem; margin-bottom:40px; color:#00bfff;}
+.about-text {text-align:center; max-width:800px; margin:0 auto 20px auto; line-height:1.8; font-size:1.2rem;}
+
+/* Статистика */
+.stats {display:flex; flex-wrap:wrap; justify-content:center; gap:40px; margin:40px 0;}
+.stat {background:rgba(0,0,0,0.4); padding:20px 30px; border-radius:15px; text-align:center; opacity:0; transform:translateY(20px); transition:0.6s;}
+.stat h3 {font-size:2rem; color:#ffdd00; margin-bottom:5px;}
+.stat p {font-size:1rem; color:#fff;}
+.stat.visible {opacity:1; transform:translateY(0);}
+
+/* Уроци */
+.lessons .platforms {display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-top:30px;}
+.platform {background:#222; padding:30px; border-radius:10px; width:250px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.5); transition:0.3s; opacity:0; transform:translateY(20px);}
+.platform:hover {transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.8);}
+.platform h3 {margin-bottom:10px; color:#00bfff;}
+
+/* Пакети */
+.pricing-cards {display:flex; flex-wrap:wrap; justify-content:center; gap:20px;}
+.card {padding:30px; border-radius:15px; width:250px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.5); transition:0.3s; cursor:pointer; opacity:0; transform:translateY(20px);}
+.card h3, .card .sub-text, .card p.price {margin-bottom:10px;}
+.card:hover {transform:translateY(-10px) scale(1.02); box-shadow:0 12px 30px rgba(0,0,0,0.8);}
+.card.focused {transform:translateY(-15px) scale(1.05); box-shadow:0 15px 35px rgba(0,0,0,0.9);}
+.card:not(.focused) {filter:brightness(0.9);}
+.card.single {background:#1abc9c; color:#fff;}
+.card.small {background:#e67e22; color:#fff;}
+.card.standard {background:#9b59b6; color:#fff;}
+.card.advanced {background:#3498db; color:#fff;}
+.card.vip {background:#f1c40f; color:#111; text-shadow:1px 1px 2px rgba(0,0,0,0.6);}
+.card.vip h3 {color:#111;}
+.card .sub-text {font-size:1rem; color:#fff;}
+.card p.price {font-size:2rem; font-weight:bold; color:white; text-align:center; margin-top:10px;}
+.pay-btn {margin-top:15px; display:none; background:#00bfff; color:#fff; padding:12px 25px; border:none; border-radius:50px; font-weight:bold; cursor:pointer; transition:0.3s;}
+.pay-btn:hover {background:#0095cc;}
+
+/* Календар */
+.calendar {max-width:700px; margin:0 auto; background:rgba(0,0,0,0.4); border-radius:15px; overflow:hidden;}
+.calendar-header, .calendar-body {display:grid; grid-template-columns:repeat(7, 1fr); text-align:center;}
+.calendar-header div {background:#00bfff; padding:15px 0; font-weight:bold; color:#fff; border-bottom:2px solid #111;}
+.calendar-body .day {background:#222; padding:20px 0; border-right:1px solid #111; border-bottom:1px solid #111; color:#fff; transition:0.3s; opacity:0; transform:translateY(20px);}
+.calendar-body .day:last-child, .calendar-body .day:nth-child(7) {border-right:none;}
+.calendar-body .day:hover {background:#00a1e0; transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.5);}
+.calendar-body .day.visible {opacity:1; transform:translateY(0); transition:opacity 0.6s ease-out, transform 0.6s ease-out;}
+
+/* Контакти */
+.contact form {background:#222; padding:30px; border-radius:10px; max-width:600px; margin:0 auto; box-shadow:0 4px 10px rgba(0,0,0,0.5);}
+.contact form input, .contact form textarea {width:100%; padding:12px; margin-bottom:15px; border:1px solid #444; border-radius:5px; font-size:1rem; background:#111; color:#fff; resize:none;}
+.contact form button {width:100%; background:#00bfff; color:#fff; padding:15px; border:none; border-radius:50px; font-weight:bold; font-size:1rem; cursor:pointer; transition:0.3s;}
+.contact form button:hover {background:#0095cc;}
+#form-message {margin-top:10px; color:#4CAF50; font-weight:bold; text-align:center;}
+
+/* Footer */
+footer {background:#111; color:#fff; text-align:center; padding:20px;}
+@media(max-width:768px){.pricing-cards, .lessons .platforms, .week-schedule, .stats {flex-direction:column; align-items:center;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><img src="logo.png" alt="Logo" style="height:40px;">DriveSmart</div>
+  <nav>
+    <a href="#about">За нас</a>
+    <a href="#lessons">Уроци</a>
+    <a href="#pricing">Цени</a>
+    <a href="#schedule">Работно време</a>
+    <a href="#contact">Контакти</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <img src="hero-image.jpg" alt="DriveSmart Hero">
+  <h1>Максимални точки, минимален стрес!🏆</h1>
+  <a href="#contact" class="btn">Запиши се за урок</a>
+</section>
+
+<section id="about" class="about">
+  <h2>За нас</h2>
+  <p class="about-text">
+    <strong>DriveSmart</strong> е онлайн академия по шофиране с над 3 години опит. Вече имаме над <strong>300+ успешно преминали ученика</strong> и работим с над <strong>20+ ученика седмично</strong>. Всички наши ученици <strong>100% успешно преминават изпита пред ДАИ от първия път</strong>.<br>
+    TikTok акаунтът ни има хиляди последователи и стотици хиляди гледания.
+  </p>
+  <div class="stats">
+    <div class="stat">
+      <h3 class="counter" data-target="300">0</h3>
+      <p>успешно преминали ученика</p>
+    </div>
+    <div class="stat">
+      <h3 class="counter" data-target="20">0</h3>
+      <p>ученика седмично</p>
+    </div>
+    <div class="stat">
+      <h3 class="counter" data-target="100">0</h3>
+      <p>успешен изпит пред ДАИ от първия път</p>
+    </div>
+  </div>
+</section>
+
+<section id="lessons" class="lessons">
+  <h2>Уроци</h2>
+  <div class="platforms">
+    <div class="platform"><h3>Viber</h3><p>Бърз и лесен за комуникация и споделяне на материали.</p></div>
+    <div class="platform"><h3>Discord</h3><p>Идеален за видеоуроци и групови сесии.</p></div>
+    <div class="platform"><h3>По избор</h3><p>Друг канал, който ти е удобен.</p></div>
+  </div>
+</section>
+
+<section id="pricing" class="pricing">
+  <h2>📚 Цени и пакети</h2>
+  <div class="pricing-cards">
+    <div class="card single">
+      <h3>Единичен урок</h3>
+      <p class="price">5 лв</p>
+      <button class="pay-btn">Плати онлайн</button>
+    </div>
+    <div class="card small">
+      <h3>Малък пакет</h3>
+      <p class="sub-text">(5 урока)</p>
+      <p class="price">20 лв</p>
+      <button class="pay-btn">Плати онлайн</button>
+    </div>
+    <div class="card standard">
+      <h3>Стандартен пакет</h3>
+      <p class="sub-text">(10 урока)</p>
+      <p class="price">38 лв</p>
+      <button class="pay-btn">Плати онлайн</button>
+    </div>
+    <div class="card advanced">
+      <h3>Напреднал пакет</h3>
+      <p class="sub-text">(20 урока)</p>
+      <p class="price">70 лв</p>
+      <button class="pay-btn">Плати онлайн</button>
+    </div>
+    <div class="card vip">
+      <h3>VIP пакет</h3>
+      <p class="sub-text">Пробен изпит и бонус материали</p>
+      <p class="price">75 лв</p>
+      <button class="pay-btn">Плати онлайн</button>
+    </div>
+  </div>
+</section>
+
+<section id="schedule" class="schedule-section">
+  <h2>🗓 Работно време</h2>
+  <div class="calendar">
+    <div class="calendar-header">
+      <div>Пон</div>
+      <div>Вт</div>
+      <div>Ср</div>
+      <div>Чет</div>
+      <div>Пет</div>
+      <div>Съб</div>
+      <div>Нед</div>
+    </div>
+    <div class="calendar-body">
+      <div class="day">9:00–23:00</div>
+      <div class="day">9:00–23:00</div>
+      <div class="day">9:00–23:00</div>
+      <div class="day">9:00–23:00</div>
+      <div class="day">9:00–23:00</div>
+      <div class="day">14:00–23:00</div>
+      <div class="day">14:00–23:00</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <h2>Контакти</h2>
+  <form id="contact-form" action="https://formspree.io/f/xzznvnzo" method="POST">
+    <input type="text" placeholder="Име" name="name" required>
+    <input type="email" placeholder="Имейл" name="email" required>
+    <input type="text" placeholder="Телефон" name="phone" required>
+    <textarea placeholder="Вашето съобщение" name="message" rows="5" required></textarea>
+    <button type="submit">Изпрати</button>
+    <div id="form-message"></div>
+  </form>
+</section>
+
+<footer><p>© 2025 DriveSmart | Всички права запазени</p></footer>
+
+<script>
+// Пакети - показване на бутон
+const cards = document.querySelectorAll('.card');
+cards.forEach(card => {
+  card.addEventListener('click', (e) => {
+    cards.forEach(c => {
+      c.classList.remove('focused');
+      c.querySelector('.pay-btn').style.display = 'none';
+    });
+    card.classList.add('focused');
+    card.querySelector('.pay-btn').style.display = 'inline-block';
+    e.stopPropagation();
+  });
+});
+document.body.addEventListener('click', (e) => {
+  if(!e.target.closest('.card')) {
+    cards.forEach(c => {
+      c.classList.remove('focused');
+      c.querySelector('.pay-btn').style.display = 'none';
+    });
+  }
+});
+
+// Статистика с плюсчета
+const statsEls = document.querySelectorAll('.stat');
+const statsObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      const counter = entry.target.querySelector('.counter');
+      const target = +counter.getAttribute('data-target');
+      let count = 0;
+      const increment = target / 100;
+      const updateCount = () => {
+        count += increment;
+        if(count < target){
+          if(target===300) counter.innerText = Math.ceil(count) + '+';
+          else if(target===20) counter.innerText = Math.ceil(count) + '+';
+          else if(target===100) counter.innerText = Math.ceil(count) + '%';
+          requestAnimationFrame(updateCount);
+        } else {
+          if(target===300) counter.innerText='300+';
+          else if(target===20) counter.innerText='20+';
+          else if(target===100) counter.innerText='100%';
+        }
+      };
+      updateCount();
+      statsObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:0.3});
+statsEls.forEach(stat => statsObserver.observe(stat));
+
+// Календар анимация
+const calendarDays = document.querySelectorAll('.calendar-body .day');
+const calendarObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      calendarObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:0.3});
+calendarDays.forEach(day => calendarObserver.observe(day));
+
+// Платформи анимация
+const platforms = document.querySelectorAll('.platform');
+platforms.forEach((plat,i)=>{
+  setTimeout(()=>{plat.style.opacity='1'; plat.style.transform='translateY(0)';}, i*150);
+});
+
+// Контактна форма без пренасочване
+const form = document.getElementById('contact-form');
+const formMessage = document.getElementById('form-message');
+form.addEventListener('submit', async function(e){
+  e.preventDefault();
+  const formData = new FormData(form);
+  try{
+    const response = await fetch(form.action, {
+      method: form.method,
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
+    if(response.ok){
+      formMessage.textContent = 'Ще се свържем с вас!';
+      formMessage.style.color = '#4CAF50';
+      form.reset();
+    } else {
+      formMessage.textContent = 'Имаше проблем. Опитай пак.';
+      formMessage.style.color = 'red';
+    }
+  } catch(error){
+    formMessage.textContent = 'Имаше проблем. Опитай пак.';
+    formMessage.style.color = 'red';
+  }
+});
+// Показване на пакети при скрол
+const cardsObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+      cardsObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:0.3});
+
+cards.forEach(card => cardsObserver.observe(card));
+</script>
+
+</body>
+</html>
